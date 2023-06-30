@@ -10,7 +10,7 @@
 Application::Application() 
 {
     shader = Shader();
-    scene = Scene();
+    scene = Scene("./res/Triangle.gltf");
     renderer = Renderer();
 
     glfwSetErrorCallback(glfw_error_callback);

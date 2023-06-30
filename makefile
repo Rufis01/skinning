@@ -1,5 +1,6 @@
 CPPFLAGS := -I./include
 CFLAGS := -Wall -Wpedantic
+CXXFLAGS := -Wall -Wpedantic -std=c++17 -Wno-unused-function -Wno-unused-variable
 LDFLAGS := 
 LDLIBS := -lGL -lGLEW -lglfw
 
@@ -29,16 +30,21 @@ log.o : $(SRC)/log.c\
 application.o : $(SRC)/application.cpp\
                 $(INC)/application.hpp\
                 dir 
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(SRC)/application.cpp -o $(OBJ)/$@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC)/application.cpp -o $(OBJ)/$@
       
 renderer.o : $(SRC)/renderer.cpp\
              $(INC)/renderer.hpp\
              dir 
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(SRC)/renderer.cpp -o $(OBJ)/$@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC)/renderer.cpp -o $(OBJ)/$@
+
+scene.o : $(SRC)/scene.cpp\
+             $(INC)/scene.hpp\
+             dir 
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC)/scene.cpp -o $(OBJ)/$@
 
 main : $(SRC)/main.cpp\
-       log.o application.o dir 
-	$(CXX) $(LDFLAGS) $(CPPFLAGS) $(CFLAGS) -o $(BIN)/$@ $(LDLIBS) $(SRC)/main.cpp $(OBJ)/log.o $(OBJ)/application.o
+       log.o application.o scene.o dir 
+	$(CXX) $(LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) -o $(BIN)/$@ $(LDLIBS) $(SRC)/main.cpp $(OBJ)/log.o $(OBJ)/scene.o $(OBJ)/application.o
 
 
 .PHONY: all dir zip clean
