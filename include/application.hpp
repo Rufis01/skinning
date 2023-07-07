@@ -3,9 +3,9 @@
 
 #include <GLFW/glfw3.h>
 
-#include "scene.hpp"
-#include "shader.hpp"
-#include "renderer.hpp"
+#include "renderer/scene/scene.hpp"
+#include "renderer/shader.hpp"
+#include "renderer/renderer.hpp"
 
 class Application
 {

@@ -4,13 +4,13 @@
 
 #include "application.hpp"
 
+#include "renderer/scene/sceneloader.hpp"
+
 #include "log.h"
 
 
 Application::Application() 
 {
-    shader = Shader();
-    scene = Scene("./res/Triangle.gltf");
     renderer = Renderer();
 
     glfwSetErrorCallback(glfw_error_callback);
@@ -27,6 +27,9 @@ Application::Application()
     GLenum err = glewInit();
     if(err != GLEW_OK)
         throw std::runtime_error("GLEW failed to initialize: " + std::string((char *) glewGetErrorString(err)));
+
+    Scene s;
+    loadScene(s, "./res/Triangle.gltf");
 }
 
 void Application::Run()

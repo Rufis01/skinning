@@ -1,50 +1,28 @@
 CPPFLAGS := -I./include
-CFLAGS := -Wall -Wpedantic
-CXXFLAGS := -Wall -Wpedantic -std=c++17 -Wno-unused-function -Wno-unused-variable
+CFLAGS := -Wall -Wpedantic -g
+CXXFLAGS := -Wall -Wpedantic -std=c++20 -g
 LDFLAGS := 
-LDLIBS := -lGL -lGLEW -lglfw
+LDLIBS := -lGL -lGLEW -lglfw ./lib/log.o
 
 SRC := ./src
 OBJ := ./obj
 BIN := ./bin
 INC := ./include
 
-all : main
+TARGET = $(BIN)/skinning
+OBJECTS = $(patsubst $(SRC)/%.cpp, $(OBJ)/%.o, $(shell find . -name "*.cpp"))
 
-#zip : 
-#	tar -czf progetto.tar.gz makefile include src .vscode Relazione.pdf
+all: $(TARGET)
 
-clean : 
-	rm -rf bin
-	rm -rf obj
+# You don't even need to be explicit here,
+# compiling C files is handled automagically by Make.
+$(OBJ)/%.o: $(SRC)/%.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $^ -o $@
 
-dir : 
-	mkdir -p obj
-	mkdir -p bin
-      
-log.o : $(SRC)/log.c\
-        $(INC)/log.h\
-        dir 
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(SRC)/log.c -o $(OBJ)/$@
-      
-application.o : $(SRC)/application.cpp\
-                $(INC)/application.hpp\
-                dir 
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC)/application.cpp -o $(OBJ)/$@
-      
-renderer.o : $(SRC)/renderer.cpp\
-             $(INC)/renderer.hpp\
-             dir 
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC)/renderer.cpp -o $(OBJ)/$@
+$(TARGET): $(OBJECTS)
+		$(CXX) $(LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) -o $@ $(LDLIBS) $^
 
-scene.o : $(SRC)/scene.cpp\
-             $(INC)/scene.hpp\
-             dir 
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC)/scene.cpp -o $(OBJ)/$@
+clean:
+	rm $(TARGET) $(OBJECTS)
 
-main : $(SRC)/main.cpp\
-       log.o application.o scene.o dir 
-	$(CXX) $(LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) -o $(BIN)/$@ $(LDLIBS) $(SRC)/main.cpp $(OBJ)/log.o $(OBJ)/scene.o $(OBJ)/application.o
-
-
-.PHONY: all dir zip clean
+.PHONY: all clean
