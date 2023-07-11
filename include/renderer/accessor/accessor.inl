@@ -13,7 +13,6 @@ template <typename T> Accessor<T>::Accessor(BufferView &bufferView, long byteOff
 
 template <typename T> const T *Accessor<T>::getElementAt(int idx) const
 {
-    LOGD("Element size: %d\n", elementSize);
     if(sizeof(T) != elementSize)
         LOGW("Elements size do not match!\n");
     return (const T * const)(bufferView.buffer.data() + (byteOffset + bufferView.byteOffset + (bufferView.byteStride * idx)));

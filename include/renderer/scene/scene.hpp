@@ -21,13 +21,14 @@ class Scene
     void addCamera(Camera *camera);
     void addSkin  (Skin   *skin  );
     void addLight (Light  *light );
+    
+    std::set<Mesh   *> meshes;
 
     private:
 
     //std::vector<Animation> animations;
     std::set<Node   *> rootNodes;
     std::set<Node   *> nodes;
-    std::set<Mesh   *> meshes;
     std::set<Camera *> cameras;
     std::set<Skin   *> skins;
     std::set<Light  *> lights;

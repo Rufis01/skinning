@@ -95,11 +95,13 @@ Node *loadNode(Scene &myScene, tinygltf::Model &model, int index)
         glm::decompose(glm::make_mat4(mat.data()), t.scale, t.rotation, t.translation, skew, perspective);
     }
 
-    return new Node(children, t,
-                    n.camera != -1 ? loadCamera(myScene, model, n.camera) : nullptr,
-                    n.skin   != -1 ? loadSkin  (myScene, model, n.skin  ) : nullptr,
-                    n.mesh   != -1 ? loadMesh  (myScene, model, n.mesh  ) : nullptr,
-                    n.light  != -1 ? loadLight (myScene, model, n.light ) : nullptr);
+    Node* node = new Node(children, t,
+                          n.camera != -1 ? loadCamera(myScene, model, n.camera) : nullptr,
+                          n.skin   != -1 ? loadSkin  (myScene, model, n.skin  ) : nullptr,
+                          n.mesh   != -1 ? loadMesh  (myScene, model, n.mesh  ) : nullptr,
+                          n.light  != -1 ? loadLight (myScene, model, n.light ) : nullptr);
+    myScene.addNode(node);
+    return node;
 
 }
 
@@ -142,31 +144,30 @@ Mesh *loadMesh(Scene &myScene, tinygltf::Model &model, int index)
     for(tinygltf::Primitive p : m.primitives)
     {
         int pos = p.attributes.contains("POSITION") ? p.attributes["POSITION"] : -1;
-        //int nor = p.attributes.contains("NORMAL") ? p.attributes["NORMAL"] : -1;
-        //int tex = p.attributes.contains("TEX_COORD0") ? p.attributes["TEX_COORD0"] : -1;
+        int nor = p.attributes.contains("NORMAL") ? p.attributes["NORMAL"] : -1;
+        int tex = p.attributes.contains("TEXCOORD_0") ? p.attributes["TEXCOORD_0"] : -1;
         int idx = p.indices;
 
         Accessor<glm::vec3> pa = getAccessor<glm::vec3>(model, pos);
-        //Accessor<glm::vec3> na = getAccessor<glm::vec3>(model, nor);
-        //Accessor<glm::vec2> ta = getAccessor<glm::vec2>(model, tex);
+        Accessor<glm::vec3> na = getAccessor<glm::vec3>(model, nor);
+        Accessor<glm::vec2> ta = getAccessor<glm::vec2>(model, tex);
         Accessor<short> pi = getAccessor<short>(model, idx);
 
         //assert(pa.getCount() == na.getCount() && na.getCount() == ta.getCount());//pos nor and tex should all be the same size
 
         std::vector<Vertex> vertices;
         std::vector<short> indicies;
-        vertices.resize(pa.getCount());
+        vertices.reserve(pa.getCount());
+        indicies.reserve(pi.getCount());
+        LOGD("%d\n", pa.getCount());
 
         for(int i = 0; i < pa.getCount(); i++)
         {
-            Vertex v;
-            v.position = pa[i];
-            //v.normal = na[i];
-            //v.uv = ta[i];
+            Vertex v = {pa[i], na[i], ta[i]};
             vertices.push_back(v);
         }
 
-        for(int i : pi)
+        for(short i : pi)
         {
             indicies.push_back(i);
         }
@@ -174,7 +175,9 @@ Mesh *loadMesh(Scene &myScene, tinygltf::Model &model, int index)
         primitives.push_back(Primitive(vertices, indicies));
     }
 
-    return new Mesh(primitives);
+    Mesh *mesh = new Mesh(primitives);
+    myScene.addMesh(mesh);
+    return mesh;
 }
 
 Light *loadLight(Scene &myScene, tinygltf::Model &model, int index)
@@ -186,7 +189,7 @@ Light *loadLight(Scene &myScene, tinygltf::Model &model, int index)
 
 template <typename T>
 Accessor<T> getAccessor(tinygltf::Model &model, int index)
-{
+{    
     tinygltf::Accessor a = model.accessors[index];
     tinygltf::BufferView b = model.bufferViews[a.bufferView];
 

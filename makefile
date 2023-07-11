@@ -16,8 +16,8 @@ all: $(TARGET)
 
 # You don't even need to be explicit here,
 # compiling C files is handled automagically by Make.
-$(OBJ)/%.o: $(SRC)/%.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $^ -o $@
+$(OBJ)/%.o: $(SRC)/%.cpp $(SRC)/%.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(firstword $^) -o $@
 
 $(TARGET): $(OBJECTS)
 		$(CXX) $(LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) -o $@ $(LDLIBS) $^

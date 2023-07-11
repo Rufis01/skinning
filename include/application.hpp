@@ -1,11 +1,12 @@
 #ifndef APPLICATION_HPP
 #define APPLICATION_HPP
 
-#include <GLFW/glfw3.h>
 
 #include "renderer/scene/scene.hpp"
 #include "renderer/shader.hpp"
 #include "renderer/renderer.hpp"
+
+#include <GLFW/glfw3.h>
 
 class Application
 {

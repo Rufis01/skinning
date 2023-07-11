@@ -11,8 +11,16 @@ class Mesh : public Attachable
 {
     public:
     Mesh(std::vector<Primitive> primitives);
+    std::vector<Primitive> &getPrimitives();
+
+    void uploadToGPU();
+    void draw();
+
     private:
     std::vector<Primitive> primitives;
+
+    GLuint VAO;
+    std::vector<GLuint> vertexBufferHandles, indexBufferHandles;
 };
 
 #endif
