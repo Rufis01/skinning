@@ -25,7 +25,7 @@ class Camera : public Attachable
     glm::mat4 projectionMatrix;
     glm::mat4 viewMatrix;
     glm::mat4 VPMatrix;
-    bool isUpdated = false;             //Do I need to recalculate the matrices?
+    bool isDirty = true;             //Do I need to recalculate the matrices?
     void recalculateViewMatrix();
     void recalculateVPMatrix();
 };

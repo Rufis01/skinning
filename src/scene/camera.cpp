@@ -1,13 +1,16 @@
-#include "renderer/scene/camera.hpp"
-#include "renderer/scene/node.hpp"
+#include "scene/camera.hpp"
+#include "scene/node.hpp"
+
+#include "log.h"
 
 Camera::Camera(glm::mat4 &projectionMatrix) : projectionMatrix(projectionMatrix)
 {
+    LOGD("Camera loaded\n");
 }
 
 glm::mat4 &Camera::getViewMatrix()
 {
-    if(!isUpdated)
+    if(isDirty)
         doUpdate();
     return this->viewMatrix;
 }
@@ -19,7 +22,7 @@ glm::mat4 &Camera::getProjectionMatrix()
 
 glm::mat4 &Camera::getVPMatrix()
 {
-    if(!isUpdated)
+    if(isDirty)
         doUpdate();
     return this->VPMatrix;
 }
@@ -27,13 +30,14 @@ glm::mat4 &Camera::getVPMatrix()
 
 void Camera::update()
 {
-    isUpdated = false;
+    isDirty = true;
 }
 
 void Camera::doUpdate()
 {
     recalculateViewMatrix();
     recalculateVPMatrix();
+    isDirty = false;
 }   
 
 
@@ -41,7 +45,7 @@ void Camera::doUpdate()
 
 void Camera::recalculateViewMatrix()
 {
-    this->viewMatrix = glm::inverse(this->getNode()->getModelMatrix());
+    this->viewMatrix = glm::inverse(this->getNode()->getGlobalModelMatrix());
 }
 
 void Camera::recalculateVPMatrix()

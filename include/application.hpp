@@ -2,8 +2,7 @@
 #define APPLICATION_HPP
 
 
-#include "renderer/scene/scene.hpp"
-#include "renderer/shader.hpp"
+#include "scene/scene.hpp"
 #include "renderer/renderer.hpp"
 
 #include <GLFW/glfw3.h>
@@ -18,7 +17,6 @@ class Application
 
     private:
     Renderer renderer;
-    Shader shader;
     Scene scene;
     GLFWwindow *wnd;
     static void glfw_error_callback(int error, const char* description);

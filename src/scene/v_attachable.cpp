@@ -1,4 +1,4 @@
-#include "renderer/scene/v_attachable.hpp"
+#include "scene/v_attachable.hpp"
 
 void Attachable::setNode(Node *n)
 {

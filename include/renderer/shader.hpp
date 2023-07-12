@@ -4,6 +4,7 @@
 #include <string>
 
 #include <GL/glew.h>
+#include <glm/glm.hpp>
 
 class Shader
 {
@@ -12,6 +13,8 @@ class Shader
 
     void loadVertexShaderFromFile(std::string path);
     void loadFragmentShaderFromFile(std::string path);
+    void setModelMatrix(glm::mat4 &M);
+    void setViewProjectionMatrix(glm::mat4 &VP);
     void bind();
 
     private:
@@ -20,6 +23,9 @@ class Shader
     GLuint vertexShaderHandle = -1;
 
     GLuint programHandle = -1;
+
+    GLint modelMatrixHandle = -1;
+    GLint VPMatrixHandle = -1;
 
     void loadShaderFromFile(std::string path, GLuint handle);
     void compileShader(GLuint handle);

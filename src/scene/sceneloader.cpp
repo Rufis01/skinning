@@ -1,6 +1,6 @@
 #include <string>
 
-#include "renderer/scene/sceneloader.hpp"
+#include "scene/sceneloader.hpp"
 
 #define TINYGLTF_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
@@ -18,7 +18,7 @@
 #include <glm/gtx/matrix_decompose.hpp>
 
 #include "log.h"
-#include "renderer/accessor/accessor.hpp"
+#include "accessor/accessor.hpp"
 
 static void loadRootNodes(Scene &myScene, tinygltf::Scene &scene, tinygltf::Model &model, std::vector<Node *> &nodes);
 static Node *loadNode(Scene &myScene, tinygltf::Model &model, int index);
@@ -83,9 +83,9 @@ Node *loadNode(Scene &myScene, tinygltf::Model &model, int index)
 
     if(n.matrix.size() == 0)
     {
-        t.rotation = n.rotation.size() != 0 ? glm::quat(n.rotation[0], n.rotation[1], n.rotation[2], n.rotation[3]) : glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-        t.scale = n.scale.size() != 0 ? glm::vec3(n.scale[0], n.scale[1], n.scale[2]) : glm::vec3(1.0f);
-        t.translation = n.translation.size() != 0 ? glm::vec3(n.translation[0], n.translation[1], n.translation[2]) : glm::vec3(0.0f);
+        t.rotation = n.rotation.size() != 0 ? glm::quat(n.rotation[3], n.rotation[0], n.rotation[1], n.rotation[2]) : glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+        t.scale = n.scale.size() != 0 ? glm::vec3(n.scale[0], n.scale[1], n.scale[2]) : glm::vec3(1.0f, 1.0f, 1.0f);
+        t.translation = n.translation.size() != 0 ? glm::vec3(n.translation[0], n.translation[1], n.translation[2]) : glm::vec3(0.0f, 0.0f, 0.0f);
     }
     else
     {
@@ -126,7 +126,10 @@ Camera *loadCamera(Scene &myScene, tinygltf::Model &model, int index)
         throw std::runtime_error("Unknown camera type");
     }
 
-    return nullptr;
+    Camera *camera = new Camera(projMat);
+    myScene.addCamera(camera);
+
+    return camera;
 }
 
 Skin *loadSkin(Scene &myScene, tinygltf::Model &model, int index)

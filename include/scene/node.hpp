@@ -18,10 +18,11 @@ class Node
     Node(std::vector<Node *> &children, Transform &trans, Camera *camera, Skin *skin, Mesh *mesh, Light*light);
     void setTransform(Transform &transform);
     Transform &getTransform();
-    glm::mat4 &getModelMatrix();
+    glm::mat4 &getGlobalModelMatrix();
     ~Node() = default;
 
     private:
+    bool isDirty = true;
     Node *parent = nullptr;
 
     std::vector<Node *> &children;
@@ -34,10 +35,14 @@ class Node
     Light  *light  = nullptr;
 
 
-    glm::mat4 modelMatrix;  //(From Object space to World space)
+    glm::mat4 localModelMatrix;     //(From Object space to Parent space)
+    glm::mat4 globalModelMatrix;    //(From Object space to World space)
 
+    glm::mat4 &getLocalModelMatrix();
     void setParent(Node *n);
     void notify();
+    void update();
+    void doUpdate();
 };
 
 #endif

@@ -1,4 +1,4 @@
-#include "renderer/scene/scene.hpp"
+#include "scene/scene.hpp"
 
 Scene::Scene() = default;
 

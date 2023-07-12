@@ -1,4 +1,4 @@
-#include "renderer/scene/mesh.hpp"
+#include "scene/mesh.hpp"
 
 Mesh::Mesh(std::vector<Primitive> primitives) : primitives(primitives)
 {

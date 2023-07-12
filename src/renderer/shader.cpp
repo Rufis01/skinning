@@ -1,6 +1,7 @@
 #include "renderer/shader.hpp"
 
 #include <fstream>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "log.h"
 
@@ -77,6 +78,9 @@ void Shader::linkAndValidate()
 
     glDeleteShader(this->vertexShaderHandle);
     glDeleteShader(this->fragmentShaderHandle);
+
+    this->modelMatrixHandle = glGetUniformLocation(this->programHandle, "M");
+    this->VPMatrixHandle    = glGetUniformLocation(this->programHandle, "VP");
 }
 
 void Shader::bind()
@@ -85,4 +89,14 @@ void Shader::bind()
         linkAndValidate();
 
     glUseProgram(this->programHandle);
+}
+
+void Shader::setModelMatrix(glm::mat4 &M)
+{
+    glUniformMatrix4fv(modelMatrixHandle, 1, GL_FALSE, (const float*)glm::value_ptr(M));
+}
+
+void Shader::setViewProjectionMatrix(glm::mat4 &VP)
+{
+    glUniformMatrix4fv(VPMatrixHandle, 1, GL_FALSE, (const float*)glm::value_ptr(VP));
 }

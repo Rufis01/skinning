@@ -1,4 +1,4 @@
-#include "renderer/scene/mesh/primitive.hpp"
+#include "scene/mesh/primitive.hpp"
 
 #include "log.h"
 
