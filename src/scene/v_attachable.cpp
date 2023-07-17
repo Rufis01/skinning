@@ -5,11 +5,6 @@ void Attachable::setNode(Node *n)
     this->node = n;
 }
 
-void Attachable::update()
-{
-}
-
-
 Node *Attachable::getNode()
 {
     return this->node;

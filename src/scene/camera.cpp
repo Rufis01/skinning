@@ -28,7 +28,7 @@ glm::mat4 &Camera::getVPMatrix()
 }
 
 
-void Camera::update()
+void Camera::update(Node *n)
 {
     isDirty = true;
 }

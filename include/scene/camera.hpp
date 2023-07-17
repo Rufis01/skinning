@@ -5,7 +5,7 @@
 
 #include "v_attachable.hpp"
 
-class Camera : public Attachable
+class Camera : public Attachable, public NodeObserver
 {
     public:
     Camera(glm::mat4 &projectionMatrix);
@@ -14,7 +14,7 @@ class Camera : public Attachable
     glm::mat4 &getProjectionMatrix();   //(From Camera space to Clip space)
     glm::mat4 &getVPMatrix();           //Projection * View
 
-    virtual void update();              //Lazy updating. Recalculate matrices only when needed.
+    virtual void update(Node *node);              //Lazy updating. Recalculate matrices only when needed.
     void doUpdate();                  
 
     //void setProjectionMatrix();

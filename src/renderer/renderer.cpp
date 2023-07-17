@@ -1,5 +1,9 @@
 #include "renderer/renderer.hpp"
 #include <GL/glew.h>
+#include <iostream>
+
+#include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include "log.h"
 
@@ -45,11 +49,26 @@ void Renderer::drawScene(Scene &scene)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
 	for(Mesh *m : scene.meshes)
 	{
+		if(m->getNode()->skin)
+			m->getNode()->skin->bind();
 		glm::mat4 modelMatrix = m->getNode()->getGlobalModelMatrix();
+/*
+        glm::vec3 scale;
+		glm::quat rotation;
+        glm::vec3 translation;
+        glm::vec3 skew;
+        glm::vec4 perspective;
+
+        glm::decompose(modelMatrix, scale, rotation, translation, skew, perspective);
+
+		glm::vec3 euler = glm::eulerAngles(rotation) * 180.0f / 3.14159f;
+		LOGD("Node %s has rotation X:%f Y:%f Z:%f\n",  m->getNode()->name.c_str(), euler.x, euler.y, euler.z);
+*/
 		shader.setModelMatrix(modelMatrix);
 
 		m->draw();
 	}
+//	getchar();
 }
 
 void renderScene()

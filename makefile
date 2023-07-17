@@ -1,6 +1,6 @@
 CPPFLAGS := -I./include
 CFLAGS := -Wall -Wpedantic -g
-CXXFLAGS := -Wall -Wpedantic -std=c++20 -g
+CXXFLAGS := -Wall -Wpedantic -std=c++20 -g -O3
 LDFLAGS := 
 LDLIBS := -lGL -lGLEW -lglfw ./lib/log.o
 

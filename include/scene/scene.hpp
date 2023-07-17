@@ -13,7 +13,7 @@ class Scene
 {
     public:
     Scene();
-    Scene(std::set<Node *> rootNodes);
+    Scene(std::vector<Node *> rootNodes);
     ~Scene();
 
     void addNode  (Node   *node  );
@@ -22,16 +22,16 @@ class Scene
     void addSkin  (Skin   *skin  );
     void addLight (Light  *light );
     
-    std::set<Mesh   *> meshes;
-    std::set<Camera *> cameras;
+    std::vector<Mesh   *> meshes;
+    std::vector<Camera *> cameras;
+    std::vector<Node   *> nodes;
+    std::vector<Skin   *> skins;
+    std::vector<Light  *> lights;
 
     private:
 
     //std::vector<Animation> animations;
-    std::set<Node   *> rootNodes;
-    std::set<Node   *> nodes;
-    std::set<Skin   *> skins;
-    std::set<Light  *> lights;
+    std::vector<Node   *> rootNodes;
     //std::vector<Texture> textures;
     //std::vector<Sampler> samplers;
 };

@@ -28,16 +28,19 @@ Application::Application()
     renderer.init();
 
     loadScene(this->scene, "./res/MyScene.gltf");
+    LOGI("Scene loaded!\n");
 }
 
 void Application::Run()
 {
+    LOGI("Uploading data to GPU!\n");
     for(Mesh *m : scene.meshes)
-    {
         m->uploadToGPU();
-    }
 
+    for(Skin *s : scene.skins)
+        s->uploadToGPU();
 
+    LOGI("Starting rendering!\n");
     while (!glfwWindowShouldClose(wnd))
     {
         renderer.drawScene(scene);

@@ -12,6 +12,7 @@
 #include "tiny_gltf.h"
 #pragma GCC diagnostic pop
 
+#include <typeinfo>
 #include <assert.h>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
@@ -21,17 +22,19 @@
 #include "accessor/accessor.hpp"
 
 static void loadRootNodes(Scene &myScene, tinygltf::Scene &scene, tinygltf::Model &model, std::vector<Node *> &nodes);
-static Node *loadNode(Scene &myScene, tinygltf::Model &model, int index);
-static Camera *loadCamera(Scene &myScene, tinygltf::Model &model, int index);
-static Skin *loadSkin(Scene &myScene, tinygltf::Model &model, int index);
-static Mesh *loadMesh(Scene &myScene, tinygltf::Model &model, int index);
-static Light *loadLight(Scene &myScene, tinygltf::Model &model, int index);
+static Node *loadNode(Scene &myScene, tinygltf::Model &model, tinygltf::Node);
+static Camera *loadCamera(tinygltf::Model &model, tinygltf::Camera c);
+static Skin *loadSkin(tinygltf::Model &model, tinygltf::Skin s);
+static void setSkinJoints(Scene &myScene, Skin *mySkin, tinygltf::Skin s);
+static Mesh *loadMesh(tinygltf::Model &model, tinygltf::Mesh m);
+static Light *loadLight(tinygltf::Model &model, tinygltf::Light l);
 
 template <typename T>
 static Accessor<T> getAccessor(tinygltf::Model &model, int index);
 
 void loadScene(Scene &scene, const char *path, int index)
 {
+    ///TODO: maybe reorder the mesh array based on the skin index. We don't want to swap skins everytime.
     tinygltf::TinyGLTF loader;
     tinygltf::Model model;
 
@@ -57,26 +60,66 @@ void loadScene(Scene &scene, const char *path, int index)
 
 void loadRootNodes(Scene &myScene, tinygltf::Scene &scene, tinygltf::Model &model, std::vector<Node *> &nodes)
 {
+    for(tinygltf::Camera c : model.cameras)
+    {
+        myScene.addCamera(loadCamera(model, c));
+    }
+
+    for(tinygltf::Mesh m : model.meshes)
+    {
+        myScene.addMesh(loadMesh(model, m));
+    }
+
+    for(tinygltf::Skin s : model.skins)
+    {
+        myScene.addSkin(loadSkin(model, s));
+    }
+
+    for(tinygltf::Light l : model.lights)
+    {
+        myScene.addLight(loadLight(model, l));
+    }
+
+    myScene.nodes.resize(model.nodes.size(), nullptr);
+    for(int i=0; i<model.nodes.size(); i++)
+    {
+        if(myScene.nodes[i] != nullptr) continue;
+        Node *n = loadNode(myScene, model, model.nodes[i]);
+        myScene.nodes[i] = n;
+    }
+
+    for(int i = 0; i < model.skins.size(); i++)
+    {
+        setSkinJoints(myScene, myScene.skins[i], model.skins[i]);
+    }
+
     ///TODO: maybe load everything instead of just what used for the first scene?
     std::vector<Node *> rootNodes;
     for(int i : scene.nodes)
     {
-
-        Node *myNode = loadNode(myScene, model, i);
-
-        rootNodes.push_back(myNode);
+        rootNodes.push_back(myScene.nodes[i]);
     }
 }
 
-Node *loadNode(Scene &myScene, tinygltf::Model &model, int index)
+Node *loadNode(Scene &myScene, tinygltf::Model &model, tinygltf::Node n)
 {
-    tinygltf::Node n = model.nodes[index];
     std::vector<Node *> children;
 
-
+    //LOGD("Children of %s:\n", n.name.c_str());
     for(int i : n.children)
     {
-        children.push_back(loadNode(myScene, model, i));
+        Node *c;
+        if(myScene.nodes[i] != nullptr)
+        {
+            c = myScene.nodes[i];
+        }
+        else
+        {
+            c = loadNode(myScene, model, model.nodes[i]);
+            myScene.nodes[i] = c;
+        }
+        //LOGD("\t%s\n", c->name.c_str());
+        children.push_back(c);
     }
 
     Transform t;
@@ -96,18 +139,16 @@ Node *loadNode(Scene &myScene, tinygltf::Model &model, int index)
     }
 
     Node* node = new Node(children, t,
-                          n.camera != -1 ? loadCamera(myScene, model, n.camera) : nullptr,
-                          n.skin   != -1 ? loadSkin  (myScene, model, n.skin  ) : nullptr,
-                          n.mesh   != -1 ? loadMesh  (myScene, model, n.mesh  ) : nullptr,
-                          n.light  != -1 ? loadLight (myScene, model, n.light ) : nullptr);
-    myScene.addNode(node);
+                          n.camera != -1 ? myScene.cameras[n.camera] : nullptr,
+                          n.skin   != -1 ? myScene.skins  [n.skin  ] : nullptr,
+                          n.mesh   != -1 ? myScene.meshes [n.mesh  ] : nullptr,
+                          n.light  != -1 ? myScene.lights [n.light ] : nullptr,
+                          n.name);
     return node;
-
 }
 
-Camera *loadCamera(Scene &myScene, tinygltf::Model &model, int index)
+Camera *loadCamera(tinygltf::Model &model, tinygltf::Camera c)
 {
-    tinygltf::Camera c = model.cameras[index];
     glm::mat4 projMat;
     
     if(c.type == "perspective")
@@ -127,21 +168,43 @@ Camera *loadCamera(Scene &myScene, tinygltf::Model &model, int index)
     }
 
     Camera *camera = new Camera(projMat);
-    myScene.addCamera(camera);
 
     return camera;
 }
 
-Skin *loadSkin(Scene &myScene, tinygltf::Model &model, int index)
+Skin *loadSkin(tinygltf::Model &model, tinygltf::Skin s)
 {
-    tinygltf::Skin s = model.skins[index];
+    std::vector<glm::mat4> inverseBindMatrices;
 
-    return nullptr;
+    Accessor<glm::mat4> matrices = getAccessor<glm::mat4>(model, s.inverseBindMatrices);
+
+    for(glm::mat4 mat : matrices)
+    {
+        inverseBindMatrices.push_back(mat);
+    }
+
+    return new Skin(inverseBindMatrices);
 }
 
-Mesh *loadMesh(Scene &myScene, tinygltf::Model &model, int index)
+void setSkinJoints(Scene &myScene, Skin *mySkin, tinygltf::Skin s)
 {
-    tinygltf::Mesh m = model.meshes[index];
+    std::vector<Node *> joints;
+    for(int i : s.joints)
+    {
+        joints.push_back(myScene.nodes[i]);
+    }
+
+    mySkin->setJoints(joints);
+    
+}
+
+
+namespace glm
+{
+    typedef vec<4, unsigned char, defaultp> ubvec4;
+};
+Mesh *loadMesh(tinygltf::Model &model, tinygltf::Mesh m)
+{
     std::vector<Primitive> primitives;
 
     for(tinygltf::Primitive p : m.primitives)
@@ -149,11 +212,15 @@ Mesh *loadMesh(Scene &myScene, tinygltf::Model &model, int index)
         int pos = p.attributes.contains("POSITION") ? p.attributes["POSITION"] : -1;
         int nor = p.attributes.contains("NORMAL") ? p.attributes["NORMAL"] : -1;
         int tex = p.attributes.contains("TEXCOORD_0") ? p.attributes["TEXCOORD_0"] : -1;
+        int jnt = p.attributes.contains("JOINTS_0") ? p.attributes["JOINTS_0"] : -1;
+        int wgh = p.attributes.contains("WEIGHTS_0") ? p.attributes["WEIGHTS_0"] : -1;
         int idx = p.indices;
 
         Accessor<glm::vec3> pa = getAccessor<glm::vec3>(model, pos);
         Accessor<glm::vec3> na = getAccessor<glm::vec3>(model, nor);
         Accessor<glm::vec2> ta = getAccessor<glm::vec2>(model, tex);
+        Accessor<glm::ubvec4> ja = getAccessor<glm::ubvec4>(model, jnt);
+        Accessor<glm::vec4> wa = getAccessor<glm::vec4>(model, wgh);
         Accessor<short> pi = getAccessor<short>(model, idx);
 
         //assert(pa.getCount() == na.getCount() && na.getCount() == ta.getCount());//pos nor and tex should all be the same size
@@ -166,7 +233,9 @@ Mesh *loadMesh(Scene &myScene, tinygltf::Model &model, int index)
 
         for(int i = 0; i < pa.getCount(); i++)
         {
-            Vertex v = {pa[i], na[i], ta[i]};
+            glm::ubvec4 j = ja[i];
+            glm::vec4 joints = glm::vec4((uint)j.x, (uint)j.y, (uint)j.z, (uint)j.w);
+            Vertex v = {pa[i], na[i], ta[i], joints, wa[i]};
             vertices.push_back(v);
         }
 
@@ -179,13 +248,11 @@ Mesh *loadMesh(Scene &myScene, tinygltf::Model &model, int index)
     }
 
     Mesh *mesh = new Mesh(primitives);
-    myScene.addMesh(mesh);
     return mesh;
 }
 
-Light *loadLight(Scene &myScene, tinygltf::Model &model, int index)
+Light *loadLight(tinygltf::Model &model, tinygltf::Light l)
 {
-    tinygltf::Light l = model.lights[index];
 
     return nullptr;
 }

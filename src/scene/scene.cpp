@@ -2,33 +2,33 @@
 
 Scene::Scene() = default;
 
-Scene::Scene(std::set<Node *> rootNodes) : rootNodes(rootNodes)
+Scene::Scene(std::vector<Node *> rootNodes) : rootNodes(rootNodes)
 {
 }
 
 void Scene::addNode(Node *node)
 {
-    nodes.emplace(node);
+    nodes.emplace_back(node);
 }
 
 void Scene::addMesh(Mesh *mesh)
 {
-    meshes.emplace(mesh);
+    meshes.emplace_back(mesh);
 }
 
 void Scene::addCamera(Camera *camera)
 {
-    cameras.emplace(camera);
+    cameras.emplace_back(camera);
 }
 
 void Scene::addSkin(Skin *skin)
 {
-    skins.emplace(skin);
+    skins.emplace_back(skin);
 }
 
 void Scene::addLight(Light *light)
 {
-    lights.emplace(light);
+    lights.emplace_back(light);
 }
 
 Scene::~Scene()

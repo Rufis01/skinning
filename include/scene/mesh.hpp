@@ -7,7 +7,7 @@
 
 #include "mesh/primitive.hpp"
 
-class Mesh : public Attachable
+class Mesh : public Attachable, public NodeObserver
 {
     public:
     Mesh(std::vector<Primitive> primitives);

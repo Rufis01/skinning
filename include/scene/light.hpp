@@ -3,7 +3,7 @@
 
 #include "v_attachable.hpp"
 
-class Light : public Attachable
+class Light : public Attachable, public NodeObserver
 {
 };
 
