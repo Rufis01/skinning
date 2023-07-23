@@ -2,7 +2,7 @@
 
 #include "log.h"
 
-Primitive::Primitive(std::vector<Vertex> verticies, std::vector<short> indicies) : verticies(verticies), indicies(indicies)
+Primitive::Primitive(std::vector<Vertex> verticies, std::vector<short> indicies, Texture *texture) : verticies(verticies), indicies(indicies), texture(texture)
 {
 }
 
@@ -18,6 +18,12 @@ GLuint Primitive::getVertexBufferSize()
 GLuint Primitive::getIndexBufferSize()
 {
     return indicies.size() * sizeof(short);
+}
+
+void Primitive::bindTexture()
+{
+    if(texture)
+        texture->bind();
 }
 
 Vertex *Primitive::getVertexData()

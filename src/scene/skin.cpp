@@ -22,7 +22,7 @@ void Skin::uploadToGPU()
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, jointMatricesHandle);
     glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * joints.size(), nullptr, GL_DYNAMIC_DRAW);
 
-    for(int i = 0; i < joints.size(); i++)
+    for(unsigned int i = 0; i < joints.size(); i++)
     {
         glm::mat4 jointMat = joints[i]->getGlobalModelMatrix() * inverseBindMatrices[i];
         glBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * i, sizeof(glm::mat4) , &jointMat);
@@ -35,7 +35,7 @@ void Skin::uploadToGPU()
 void Skin::update(Node *n)
 {
     int idx = -1;
-    for(int i = 0; i < joints.size(); i++)
+    for(unsigned int i = 0; i < joints.size(); i++)
     {
         if(joints[i] == n) idx = i;
     }

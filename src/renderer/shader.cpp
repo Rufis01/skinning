@@ -67,7 +67,7 @@ void Shader::linkAndValidate()
 
     glBindAttribLocation(this->programHandle, 0, "position");
     glBindAttribLocation(this->programHandle, 1, "normal");
-    glBindAttribLocation(this->programHandle, 2, "texCoord");
+    glBindAttribLocation(this->programHandle, 2, "uv");
     glBindAttribLocation(this->programHandle, 3, "joints");
     glBindAttribLocation(this->programHandle, 4, "weights");
 

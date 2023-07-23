@@ -26,16 +26,16 @@ void Scene::addSkin(Skin *skin)
     skins.emplace_back(skin);
 }
 
-void Scene::addLight(Light *light)
+void Scene::addAnimation(Animation *anim)
 {
-    lights.emplace_back(light);
+    animations.emplace_back(anim);
 }
 
 Scene::~Scene()
 {
     for(auto e : meshes)
         delete e;
-    for(auto e : lights)
+    for(auto e : animations)
         delete e;
     for(auto e : cameras)
         delete e;

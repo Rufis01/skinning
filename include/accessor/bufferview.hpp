@@ -5,7 +5,10 @@
 
 struct BufferView
 {
-    BufferView(int offset, int length, int stride, std::vector<unsigned char> &buffer) : byteOffset(offset), byteLength(length), byteStride(stride), buffer(buffer) {};
+    BufferView(int offset, int length, int stride, std::vector<unsigned char> &buffer) :
+    byteOffset(offset), byteLength(length), byteStride(stride), buffer(buffer)
+    {
+    };
 
     long byteOffset;
     long byteLength;

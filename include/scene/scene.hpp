@@ -3,11 +3,12 @@
 
 #include <set>
 
-#include "mesh.hpp"
+#include "mesh/mesh.hpp"
 #include "node.hpp"
 #include "camera.hpp"
-#include "light.hpp"
 #include "skin.hpp"
+#include "animation/animation.hpp"
+#include "mesh/texture.hpp"
 
 class Scene
 {
@@ -16,24 +17,25 @@ class Scene
     Scene(std::vector<Node *> rootNodes);
     ~Scene();
 
-    void addNode  (Node   *node  );
-    void addMesh  (Mesh   *mesh  );
-    void addCamera(Camera *camera);
-    void addSkin  (Skin   *skin  );
-    void addLight (Light  *light );
+    void addNode     (Node        *node   );
+    void addMesh     (Mesh        *mesh   );
+    void addCamera   (Camera      *camera );
+    void addSkin     (Skin        *skin   );
+    void addAnimation(Animation   *anim   );
+    void addTexture  (Texture     *texture);
     
-    std::vector<Mesh   *> meshes;
-    std::vector<Camera *> cameras;
-    std::vector<Node   *> nodes;
-    std::vector<Skin   *> skins;
-    std::vector<Light  *> lights;
+    std::vector<Mesh      *> meshes;
+    std::vector<Camera    *> cameras;
+    std::vector<Node      *> nodes;
+    std::vector<Skin      *> skins;
+    std::vector<Animation *> animations;
+    std::vector<Texture   *> textures;
+    
+    std::vector<std::vector<unsigned char>> buffers;
 
     private:
 
-    //std::vector<Animation> animations;
-    std::vector<Node   *> rootNodes;
-    //std::vector<Texture> textures;
-    //std::vector<Sampler> samplers;
+    std::vector<Node *> rootNodes;
 };
 
 #endif

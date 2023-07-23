@@ -7,14 +7,16 @@
 
 #include "material.hpp"
 #include "vertex.hpp"
+#include "texture.hpp"
 
 class Primitive
 {
     public:
-    Primitive(std::vector<Vertex> verticies, std::vector<short> indicies);
+    Primitive(std::vector<Vertex> verticies, std::vector<short> indicies, Texture *texture);
     void draw();
     GLuint getVertexBufferSize();
     GLuint getIndexBufferSize();
+    void bindTexture();
 
     Vertex *getVertexData();
     short *getIndexData();
@@ -24,9 +26,7 @@ class Primitive
     std::vector<Vertex> verticies;
     std::vector<short> indicies;
 
-    //Material &material;
-
-    int mode;
+    Texture *texture;
 };
 
 #endif

@@ -11,7 +11,7 @@ in vec2 uv;
 in vec4 joints;
 in vec4 weights;
 
-out vec4 color;
+out vec2 TexCoord;
 
 uniform mat4 M;
 uniform mat4 VP;    //P * V
@@ -23,7 +23,8 @@ void main()
         weights.y * jointMatrices.mat[int(joints.y)] +
         weights.z * jointMatrices.mat[int(joints.z)] +
         weights.w * jointMatrices.mat[int(joints.w)];
-    vec4 worldPosition = skinMat * vec4(position,1.0);
+    vec4 worldPosition = skinMat * vec4(position, 1.0);
     gl_Position = VP * worldPosition;
-    color = vec4(position, 1.0f);
+    TexCoord = vec2(uv.s, uv.t);
+    //color = vec4(position, 1.0f);
 }

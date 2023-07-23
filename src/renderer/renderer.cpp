@@ -51,7 +51,7 @@ void Renderer::drawScene(Scene &scene)
 	{
 		if(m->getNode()->skin)
 			m->getNode()->skin->bind();
-		glm::mat4 modelMatrix = m->getNode()->getGlobalModelMatrix();
+		//glm::mat4 modelMatrix = m->getNode()->getGlobalModelMatrix();
 /*
         glm::vec3 scale;
 		glm::quat rotation;
@@ -64,7 +64,7 @@ void Renderer::drawScene(Scene &scene)
 		glm::vec3 euler = glm::eulerAngles(rotation) * 180.0f / 3.14159f;
 		LOGD("Node %s has rotation X:%f Y:%f Z:%f\n",  m->getNode()->name.c_str(), euler.x, euler.y, euler.z);
 */
-		shader.setModelMatrix(modelMatrix);
+		//shader.setModelMatrix(modelMatrix);
 
 		m->draw();
 	}

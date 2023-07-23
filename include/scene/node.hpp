@@ -5,8 +5,7 @@
 #include <string>
 
 #include "camera.hpp"
-#include "mesh.hpp"
-#include "light.hpp"
+#include "scene/mesh/mesh.hpp"
 #include "skin.hpp"
 
 #include "transform.hpp"
@@ -18,7 +17,7 @@
 class Node : NodeObserver
 {
     public:
-    Node(std::vector<Node *> &children, Transform &trans, Camera *camera, Skin *skin, Mesh *mesh, Light*light, std::string name);
+    Node(std::vector<Node *> &children, Transform &trans, Camera *camera, Skin *skin, Mesh *mesh, std::string name);
     void setTransform(Transform &transform);
     Transform &getTransform();
     glm::mat4 &getGlobalModelMatrix();
@@ -29,7 +28,8 @@ class Node : NodeObserver
     void attachObserver(NodeObserver *obs);
 
     private:
-    bool isDirty = true;
+    bool localMatrixIsDirty = true;
+    bool globalMatrixIsDirty = true;
     Node *parent = nullptr;
 
     std::vector<Node *> children;
@@ -39,7 +39,6 @@ class Node : NodeObserver
 
     Camera *camera = nullptr;
     Mesh   *mesh   = nullptr;
-    Light  *light  = nullptr;
 
 
     glm::mat4 localModelMatrix;     //(From Object space to Parent space)
@@ -49,7 +48,8 @@ class Node : NodeObserver
     void setParent(Node *n);
     void notify();
     virtual void update(Node *n);
-    void doUpdate();
+    void doUpdateLocalMatrix();
+    void doUpdateGlobalMatrix();
 };
 
 #endif

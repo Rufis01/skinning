@@ -4,7 +4,7 @@
 
 #include "application.hpp"
 
-#include "scene/sceneloader.hpp"
+#include "sceneloader.hpp"
 
 #include "log.h"
 
@@ -40,12 +40,25 @@ void Application::Run()
     for(Skin *s : scene.skins)
         s->uploadToGPU();
 
+    for(Texture *t : scene.textures)
+        t->uploadToGPU();
+
     LOGI("Starting rendering!\n");
+    float lastFrameTime = glfwGetTime();
     while (!glfwWindowShouldClose(wnd))
     {
+        float currentFrameTime = glfwGetTime();
+        float deltaT = currentFrameTime - lastFrameTime;
+
+        for(Animation *a : scene.animations)
+        {
+            a->update(deltaT);
+        }
+
         renderer.drawScene(scene);
         glfwSwapBuffers(wnd);
         glfwPollEvents();
+        lastFrameTime = currentFrameTime;
     }
 }
 
