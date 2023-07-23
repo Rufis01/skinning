@@ -51,48 +51,7 @@ void Renderer::drawScene(Scene &scene)
 	{
 		if(m->getNode()->skin)
 			m->getNode()->skin->bind();
-		//glm::mat4 modelMatrix = m->getNode()->getGlobalModelMatrix();
-/*
-        glm::vec3 scale;
-		glm::quat rotation;
-        glm::vec3 translation;
-        glm::vec3 skew;
-        glm::vec4 perspective;
-
-        glm::decompose(modelMatrix, scale, rotation, translation, skew, perspective);
-
-		glm::vec3 euler = glm::eulerAngles(rotation) * 180.0f / 3.14159f;
-		LOGD("Node %s has rotation X:%f Y:%f Z:%f\n",  m->getNode()->name.c_str(), euler.x, euler.y, euler.z);
-*/
-		//shader.setModelMatrix(modelMatrix);
 
 		m->draw();
 	}
-//	getchar();
-}
-
-void renderScene()
-{
-	/*mat4 m4Transform = {0}, model = {0};
-	GLuint *hProgram, hShaderTransform, hShaderMVP;
-
-	hProgram = getShader("default");
-	glUseProgram(*hProgram);
-	hShaderTransform = glGetUniformLocation(*hProgram, "transform");
-	hShaderMVP = glGetUniformLocation(*hProgram, "MVP");
-	//LOGINFO("Program Handle:%d, Transform Handle: %d, MVP *handle: %d\n", *hProgram, hShaderTransform, hShaderMVP);
-
-	for(int i = 0; i < activeEntities; i++)
-	{
-		glBindVertexArray(entities[i]->mesh.model->hVertexArrayObject);
-		glBindTexture(GL_TEXTURE_2D, *player->hTexture);
-
-		calculateMVP(camera, &entities[i]->mesh.transform, &m4Transform[0]);
-		glUniformMatrix4fv(hShaderMVP, 1, GL_FALSE, (GLfloat*) &m4Transform);
-
-		calculateModel(&entities[i]->mesh.transform, model);
-		glUniformMatrix4fv(hShaderTransform, 1, GL_FALSE, (GLfloat*) model[0]);
-
-		glDrawElements(GL_TRIANGLES, entities[i]->mesh.model->indices, GL_UNSIGNED_INT, NULL);
-	}*/
 }

@@ -17,10 +17,6 @@ class Camera : public Attachable, public NodeObserver
     virtual void update(Node *node);              //Lazy updating. Recalculate matrices only when needed.
     void doUpdate();                  
 
-    //void setProjectionMatrix();
-
-    //virtual ~Camera() = 0;
-
     private:
     glm::mat4 projectionMatrix;
     glm::mat4 viewMatrix;

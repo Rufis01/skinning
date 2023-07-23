@@ -40,9 +40,6 @@ void Camera::doUpdate()
     isDirty = false;
 }   
 
-
-//void setProjectionMatrix();
-
 void Camera::recalculateViewMatrix()
 {
     this->viewMatrix = glm::inverse(this->getNode()->getGlobalModelMatrix());

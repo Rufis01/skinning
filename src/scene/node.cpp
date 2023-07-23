@@ -90,10 +90,6 @@ void Node::doUpdateGlobalMatrix()
     else
         this->globalModelMatrix = this->getLocalModelMatrix();
     globalMatrixIsDirty = false;
-
-    //LOGD("Node %s updated its matrix. %s%s\n", name.c_str(), parent ? "Its parent is " : "", parent ? parent->name.c_str() : "");
-    //glm::vec3 euler = glm::eulerAngles(this->transform.rotation) * 180.0f / 3.14159f;
-    //LOGD("Node %s has rotation X:%f Y:%f Z:%f\n", this->name.c_str(), euler.x, euler.y, euler.z);
 }
 
 

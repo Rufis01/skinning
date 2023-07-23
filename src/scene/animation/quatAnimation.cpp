@@ -3,13 +3,12 @@
 #include <glm/ext/quaternion_float.hpp>
 
 QuatAnimation::QuatAnimation(Accessor<glm::quat> *dataAccessor, Accessor<float> *timeAccessor, Node &target, InterpolationType type) :
-dataAccessor(dataAccessor),
-Animation(target, type, timeAccessor)
+Animation(target, type, timeAccessor),
+dataAccessor(dataAccessor)
 {
     if(type != LINEAR)
         LOGE("Type %s not supported, using LINEAR\n", type == STEP ? "STEP" : "CUBICSPLINE");
     this->type = type;
-    currentKeyframeIndex = 0;
 }
 
 void QuatAnimation::update(float deltaT)

@@ -1,25 +1,15 @@
 #include "scene/animation/vec3Animation.hpp"
 
 Vec3Animation::Vec3Animation(Accessor<glm::vec3> *dataAccessor, Accessor<float> *timeAccessor, Node &target, Path path, InterpolationType type) :
+Animation(target, type, timeAccessor),
 dataAccessor(dataAccessor),
-path(path),
-Animation(target, type, timeAccessor)
+path(path)
 {
     this->timeAccessor = timeAccessor;
 
     if(type != LINEAR)
         LOGE("Type %s not supported, using LINEAR\n", type == STEP ? "STEP" : "CUBICSPLINE");
     this->type = type;
-
- /*   float prevValue = (*timeAccessor)[0];
-
-    for(int i=1; i<timeAccessor->getCount(); i++)
-    {
-        if((*timeAccessor)[i] < prevValue)
-            LOGE("Time ran backwards!\n");
-        prevValue = (*timeAccessor)[i];
-    }*/
-    currentKeyframeIndex = 0;
 }
 
 void Vec3Animation::update(float deltaT)
