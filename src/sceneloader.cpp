@@ -24,6 +24,8 @@
 #include "scene/animation/quatAnimation.hpp"
 #include "scene/animation/vec3Animation.hpp"
 
+typedef unsigned int uint;
+
 static void loadRootNodes(Scene &myScene, tinygltf::Scene &scene, tinygltf::Model &model, std::vector<Node *> &nodes);
 static Node *loadNode(Scene &myScene, tinygltf::Model &model, tinygltf::Node &n);
 static Camera *loadCamera(tinygltf::Model &model, tinygltf::Camera &c);

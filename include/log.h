@@ -5,6 +5,15 @@
 extern "C" {
 #endif
 
+#ifdef DISABLE_LOG
+
+#define LOGD(format, ...) ;
+#define LOGI(format, ...) ;
+#define LOGW(format, ...) ;
+#define LOGE(format, ...) ;
+#define LOGF(format, ...) ;
+
+#else
 
 #define LOGD(format, ...) (log_printf(LOG_DEBUG, "[DEBUG] " __FILE__ "@%s:%d " format, __func__, __LINE__ __VA_OPT__(,) __VA_ARGS__))
 #define LOGI(format, ...) (log_printf(LOG_INFO, "[INFO] " __FILE__ "@%s:%d " format, __func__, __LINE__ __VA_OPT__(,) __VA_ARGS__))
@@ -12,6 +21,7 @@ extern "C" {
 #define LOGE(format, ...) (log_printf(LOG_ERROR, "[ERROR] " __FILE__ "@%s:%d " format, __func__, __LINE__ __VA_OPT__(,) __VA_ARGS__))
 #define LOGF(format, ...) (log_printf(LOG_FATAL, "[FATAL] " __FILE__ "@%s:%d " format, __func__, __LINE__ __VA_OPT__(,) __VA_ARGS__))
 
+#endif
 
 typedef enum
 {

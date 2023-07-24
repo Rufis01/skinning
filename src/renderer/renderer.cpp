@@ -17,9 +17,13 @@ MessageCallback( GLenum source,
 				 const void* userParam )
 {
 	if(type == GL_DEBUG_TYPE_ERROR)
+	{
 		LOGE("GL CALLBACK: type = 0x%x, severity = 0x%x, message = %s\n", type, severity, message);
+	}
   	else
+	{
   		LOGD("GL CALLBACK: type = 0x%x, severity = 0x%x, message = %s\n", type, severity, message);
+	}
 }
 
 Renderer::Renderer()
