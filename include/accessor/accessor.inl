@@ -9,6 +9,8 @@ template <typename T> Accessor<T>::Accessor(BufferView &bufferView, long byteOff
     this->elementSize = this->bufferView.byteLength / this->count;
     if(this->bufferView.byteStride == 0)
         this->bufferView.byteStride = this->elementSize;
+    if(sizeof(T) != elementSize)
+        LOGW("Elements size do not match! Should be %i, is %i\n", sizeof(T), elementSize);
 }
 
 template <typename T> const T *Accessor<T>::getElementAt(int idx) const

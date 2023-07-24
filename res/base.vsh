@@ -25,6 +25,5 @@ void main()
         weights.w * jointMatrices.mat[int(joints.w)];
     vec4 worldPosition = skinMat * vec4(position, 1.0);
     gl_Position = VP * worldPosition;
-    TexCoord = vec2(uv.s, uv.t);
-    //color = vec4(position, 1.0f);
+    TexCoord = uv;
 }

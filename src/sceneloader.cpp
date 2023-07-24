@@ -24,8 +24,6 @@
 #include "scene/animation/quatAnimation.hpp"
 #include "scene/animation/vec3Animation.hpp"
 
-typedef unsigned int uint;
-
 static void loadRootNodes(Scene &myScene, tinygltf::Scene &scene, tinygltf::Model &model, std::vector<Node *> &nodes);
 static Node *loadNode(Scene &myScene, tinygltf::Model &model, tinygltf::Node &n);
 static Camera *loadCamera(tinygltf::Model &model, tinygltf::Camera &c);
@@ -40,7 +38,6 @@ static Accessor<T> *getAccessor(Scene &myScene, tinygltf::Model &model, int inde
 
 void loadScene(Scene &scene, const char *path, int index)
 {
-    ///TODO: maybe reorder the mesh array based on the skin index. We don't want to swap skins everytime.
     tinygltf::TinyGLTF loader;
     tinygltf::Model model;
 
@@ -242,21 +239,11 @@ static Mesh *loadMesh(Scene &myScene, tinygltf::Model &model, tinygltf::Mesh &m)
         Accessor<glm::vec4> *wa = getAccessor<glm::vec4>(myScene, model, wgh);
         Accessor<short> *pi = getAccessor<short>(myScene, model, idx);
 
-        //assert(pa.getCount() == na.getCount() && na.getCount() == ta.getCount());//pos nor and tex should all be the same size
-
         std::vector<Vertex> vertices;
         std::vector<short> indicies;
         vertices.reserve(pa->getCount());
         indicies.reserve(pi->getCount());
         LOGD("Primitive has %d vertices\n", pa->getCount());
-
-        /*for(int i = 0; i < pa->getCount(); i++)
-        {
-            glm::ubvec4 j = (*ja)[i];
-            glm::vec4 joints = glm::vec4((uint)j.x, (uint)j.y, (uint)j.z, (uint)j.w);
-            Vertex v = {*pa[i], *na[i], ta[i], joints, wa[i]};
-            vertices.push_back(v);
-        }*/
         
         for(int i = 0; i < pa->getCount(); i++)
         {
